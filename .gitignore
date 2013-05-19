@@ -1,0 +1,11 @@
+# SBT
+boot/
+target/
+.history
+
+# Eclipse
+.cache
+.scala_dependencies
+.settings
+.target/
+.worksheet
