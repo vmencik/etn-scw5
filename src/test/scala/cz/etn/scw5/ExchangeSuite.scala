@@ -55,8 +55,32 @@ with BeforeAndAfterAll {
     actor.underlyingActor.commodityQueues should be(Map("gold" -> Queue(gold), "silver" -> Queue(silver)))
   }
   
+  it should "pair matching buys and sells" in {
+    val buy = Buy("gold", quantity = 10, price = 5)
+    val sell = Sell("gold", quantity = 10, price = 4)
+    
+    val actor = TestActorRef[Exchange]
+    
+    actor ! buy
+    actor ! sell
+    
+    actor.underlyingActor.commodityQueues should be(Map("gold" -> Queue()))
+    // actor.underlyingActor.tradeHistory should be(Seq(Trade("gold", 10, 5)))
+  }
+  
+  "buy quote" should "opposite to sell quote" in {
+    buy.isOppositeOf(sell) should be (true)
+  }
+  
+  "sell quote" should "opposite to buy quote" in {
+    sell.isOppositeOf(buy) should be (true)
+  }
+  
   override protected def afterAll() = {
     system.shutdown()
     super.afterAll()
   }
+  
+  val buy = Buy("gold", quantity = 10, price = 5)
+  val sell = Sell("gold", quantity = 10, price = 4)
 }
