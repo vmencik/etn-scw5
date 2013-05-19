@@ -16,18 +16,20 @@ class Exchange extends Actor {
 
       val (prefix, suffix) = queue.span(!_.matches(q))
 
-      val newQueue = if (suffix.isEmpty) {
-        prefix.enqueue(q)
+      val (newQueue, newHistory) = if (suffix.isEmpty) {
+        (prefix.enqueue(q), th)
       } else {
-        prefix ++ suffix.tail
-      }
+        (prefix ++ suffix.tail, th :+ Trade(q.commodity, q.quantity, math.max(q.price, suffix.head.price)))
+      }      
 
       cq = cq.updated(q.commodity, newQueue)
-
+      th = newHistory
+      
     // val queue = cq(q.commodity)
 
   }
 
   def commodityQueues = cq
 
+  def tradeHistory = th
 }

@@ -65,7 +65,7 @@ with BeforeAndAfterAll {
     actor ! sell
     
     actor.underlyingActor.commodityQueues should be(Map("gold" -> Queue()))
-    // actor.underlyingActor.tradeHistory should be(Seq(Trade("gold", 10, 5)))
+    actor.underlyingActor.tradeHistory should be(Seq(Trade("gold", 10, 5)))
   }
   
   "buy quote" should "opposite to sell quote" in {
