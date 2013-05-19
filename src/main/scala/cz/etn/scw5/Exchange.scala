@@ -2,11 +2,13 @@ package cz.etn.scw5
 
 import akka.actor.Actor
 import scala.collection.immutable.Queue
+import akka.actor.ActorRef
 
 class Exchange extends Actor {
 
   private var cq = Map[String, Queue[Quote]]().withDefaultValue(Queue())
   private var th = List[Trade]()
+  private var traders = List[ActorRef]()
 
   def receive = {
     case q: Quote =>
@@ -19,14 +21,16 @@ class Exchange extends Actor {
       val (newQueue, newHistory) = if (suffix.isEmpty) {
         (prefix.enqueue(q), th)
       } else {
-        (prefix ++ suffix.tail, th :+ Trade(q.commodity, q.quantity, math.max(q.price, suffix.head.price)))
+        val trade = Trade(q.commodity, q.quantity, math.max(q.price, suffix.head.price))
+        traders.foreach(_ ! trade)
+        (prefix ++ suffix.tail, th :+ trade)
       }      
 
       cq = cq.updated(q.commodity, newQueue)
       th = newHistory
-      
-    // val queue = cq(q.commodity)
-
+    
+    case Subscribe(trader) =>
+      traders = traders :+ trader
   }
 
   def commodityQueues = cq
