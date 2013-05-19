@@ -9,6 +9,8 @@ class Exchange extends Actor {
   
   def receive = {
     case q: Quote =>
+      //Thread.sleep(1000)
+      println(Thread.currentThread.getName)
       val queue = cq.getOrElse(q.commodity, Queue())
       cq = cq.updated(q.commodity, queue enqueue q)
   }
