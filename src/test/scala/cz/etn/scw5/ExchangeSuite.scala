@@ -76,6 +76,16 @@ with BeforeAndAfterAll {
     sell.isOppositeOf(buy) should be (true)
   }
   
+  "buy quote" should "match matching sell quote" in {
+    buy.matches(sell) should be(true)
+  }
+  
+  "buy quote" should "not match mismatching sell quote" in {
+    val buy = Buy("gold", quantity = 10, price = 3)
+    val sell = Sell("gold", quantity = 10, price = 4)
+    buy.matches(sell) should be(false)
+  }
+  
   override protected def afterAll() = {
     system.shutdown()
     super.afterAll()
