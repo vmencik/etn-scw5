@@ -31,6 +31,9 @@ class Exchange extends Actor {
 
     case Subscribe(trader) =>
       traders = traders + trader
+
+    case Unsubscribe(trader) =>
+      traders = traders - trader
   }
 
   def commodityQueues = cq

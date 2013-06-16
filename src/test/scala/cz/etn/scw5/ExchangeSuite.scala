@@ -117,4 +117,15 @@ class ExchangeSuite extends AkkaSuite {
     s2.expectMsg(Trade("gold", quantity = 10, price = 5))
   }
 
+  it should "unsubcribe trader on stop" in {
+    val exchange = TestActorRef[Exchange]
+
+    exchange ! Subscribe(testActor)
+
+    exchange ! Unsubscribe(testActor)
+
+    exchange.underlyingActor.subcribers should not contain (testActor)
+
+  }
+
 }
