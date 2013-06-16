@@ -6,7 +6,7 @@ import akka.actor.ActorRef
 
 class Exchange extends Actor {
 
-  private var cq = Map[String, Queue[Quote]]().withDefaultValue(Queue())
+  private var cq = Map[String, Queue[(Quote, ActorRef)]]().withDefaultValue(Queue())
   private var th = List[Trade]()
   private var traders = Set[ActorRef]()
 
@@ -16,12 +16,13 @@ class Exchange extends Actor {
       println(Thread.currentThread.getName)
       val queue = cq(q.commodity)
 
-      val (prefix, suffix) = queue.span(!_.matches(q))
+      val (prefix, suffix) = queue.span(!_._1.matches(q))
 
       val (newQueue, newHistory) = if (suffix.isEmpty) {
-        (prefix.enqueue(q), th)
+        // sender -> odesilatel posledni zpravy
+        (prefix.enqueue(q -> sender), th)
       } else {
-        val trade = Trade(q.commodity, q.quantity, math.max(q.price, suffix.head.price))
+        val trade = Trade(q.commodity, q.quantity, math.max(q.price, suffix.head._1.price))
         traders.foreach(_ ! trade)
         (prefix ++ suffix.tail, th :+ trade)
       }

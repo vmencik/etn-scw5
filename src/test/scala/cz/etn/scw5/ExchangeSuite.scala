@@ -17,11 +17,11 @@ class ExchangeSuite extends AkkaSuite {
 
     val actor = TestActorRef[Exchange]
 
-    actor ! q
+    actor.tell(q, testActor)
 
     println(Thread.currentThread.getName)
 
-    actor.underlyingActor.commodityQueues should be(Map("gold" -> Queue(q)))
+    actor.underlyingActor.commodityQueues should be(Map("gold" -> Queue((q, testActor))))
 
   }
 
@@ -31,12 +31,10 @@ class ExchangeSuite extends AkkaSuite {
 
     val actor = TestActorRef[Exchange]
 
-    actor ! one
-    actor ! two
+    actor.tell(one, testActor)
+    actor.tell(two, testActor)
 
-    println(Thread.currentThread.getName)
-
-    actor.underlyingActor.commodityQueues should be(Map("gold" -> Queue(one, two)))
+    actor.underlyingActor.commodityQueues should be(Map("gold" -> Queue(one -> testActor, two -> testActor)))
   }
 
   it should "enqueue two commodities" in {
@@ -45,12 +43,10 @@ class ExchangeSuite extends AkkaSuite {
 
     val actor = TestActorRef[Exchange]
 
-    actor ! gold
-    actor ! silver
+    actor.tell(gold, testActor)
+    actor.tell(silver, testActor)
 
-    println(Thread.currentThread.getName)
-
-    actor.underlyingActor.commodityQueues should be(Map("gold" -> Queue(gold), "silver" -> Queue(silver)))
+    actor.underlyingActor.commodityQueues should be(Map("gold" -> Queue(gold -> testActor), "silver" -> Queue(silver -> testActor)))
   }
 
   it should "pair matching buys and sells" in {
@@ -59,8 +55,8 @@ class ExchangeSuite extends AkkaSuite {
 
     val actor = TestActorRef[Exchange]
 
-    actor ! buy
-    actor ! sell
+    actor.tell(buy, testActor)
+    actor.tell(sell, testActor)
 
     actor.underlyingActor.commodityQueues should be(Map("gold" -> Queue()))
     actor.underlyingActor.tradeHistory should be(Seq(Trade("gold", 10, 5)))
