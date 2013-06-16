@@ -36,4 +36,6 @@ class Exchange extends Actor {
   def commodityQueues = cq
 
   def tradeHistory = th
+  
+  def subcribers = traders
 }
