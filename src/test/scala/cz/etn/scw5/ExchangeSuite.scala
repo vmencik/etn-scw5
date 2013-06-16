@@ -8,6 +8,7 @@ import org.scalatest.matchers.ShouldMatchers
 import scala.collection.immutable.Queue
 import org.scalatest.BeforeAndAfterAll
 import akka.testkit.TestActor
+import akka.testkit.TestProbe
 
 class ExchangeSuite extends AkkaSuite {
 
@@ -90,6 +91,30 @@ class ExchangeSuite extends AkkaSuite {
     exchange.underlyingActor.subcribers should have size (1)
     exchange.underlyingActor.subcribers should contain(testActor)
 
+  }
+
+  it should "send message to subscriber after trade" in {
+    val exchange = TestActorRef[Exchange]
+    exchange ! Subscribe(testActor)
+    exchange ! Buy("gold", quantity = 10, price = 5)
+    exchange ! Sell("gold", quantity = 10, price = 5)
+
+    expectMsg(Trade("gold", quantity = 10, price = 5))
+  }
+
+  it should "send message to each subscriber after trade" in {
+    val exchange = TestActorRef[Exchange]
+    val s1 = TestProbe()
+    val s2 = TestProbe()
+
+    exchange ! Subscribe(s1.ref)
+    exchange ! Subscribe(s2.ref)
+
+    exchange ! Buy("gold", quantity = 10, price = 5)
+    exchange ! Sell("gold", quantity = 10, price = 5)
+
+    s1.expectMsg(Trade("gold", quantity = 10, price = 5))
+    s2.expectMsg(Trade("gold", quantity = 10, price = 5))
   }
 
 }
