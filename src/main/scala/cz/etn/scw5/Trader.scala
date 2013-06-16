@@ -15,4 +15,8 @@ class Trader(exchange: ActorRef) extends Actor {
     exchange ! Subscribe(self)
   }
 
+  override def postStop() {
+    exchange ! Unsubscribe(self)
+  }
+
 }
