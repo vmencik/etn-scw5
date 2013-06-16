@@ -22,7 +22,17 @@ class Exchange extends Actor {
         // sender -> odesilatel posledni zpravy
         (prefix.enqueue(q -> sender), th)
       } else {
-        val trade = Trade(q.commodity, q.quantity, math.max(q.price, suffix.head._1.price))
+        val attrs = (q.commodity, q.quantity, math.max(q.price, suffix.head._1.price))
+        val trade = (Trade.apply _).tupled(attrs)
+        val buy = (Buy.apply _).tupled(attrs)
+        val sell = (Sell.apply _).tupled(attrs)
+        val (buyer, seller) = q match {
+          case _: Buy => (sender, suffix.head._2)
+          case _: Sell => (suffix.head._2, sender)
+        }
+
+        buyer ! buy
+        seller ! sell
         traders.foreach(_ ! trade)
         (prefix ++ suffix.tail, th :+ trade)
       }

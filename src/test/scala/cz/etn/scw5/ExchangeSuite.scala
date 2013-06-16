@@ -91,11 +91,14 @@ class ExchangeSuite extends AkkaSuite {
 
   it should "send message to subscriber after trade" in {
     val exchange = TestActorRef[Exchange]
-    exchange ! Subscribe(testActor)
+
+    val s1 = TestProbe()
+
+    exchange ! Subscribe(s1.ref)
     exchange ! Buy("gold", quantity = 10, price = 5)
     exchange ! Sell("gold", quantity = 10, price = 5)
 
-    expectMsg(Trade("gold", quantity = 10, price = 5))
+    s1.expectMsg(Trade("gold", quantity = 10, price = 5))
   }
 
   it should "send message to each subscriber after trade" in {
@@ -111,6 +114,19 @@ class ExchangeSuite extends AkkaSuite {
 
     s1.expectMsg(Trade("gold", quantity = 10, price = 5))
     s2.expectMsg(Trade("gold", quantity = 10, price = 5))
+  }
+
+  it should "send message to trade participants" in {
+    val exchange = TestActorRef[Exchange]
+
+    val buyer = TestProbe()
+    val seller = TestProbe()
+
+    exchange.tell(Buy("gold", quantity = 10, price = 6), buyer.ref)
+    exchange.tell(Sell("gold", quantity = 10, price = 5), seller.ref)
+
+    buyer.expectMsg(Buy("gold", quantity = 10, price = 6))
+    seller.expectMsg(Sell("gold", quantity = 10, price = 6))
   }
 
   it should "unsubcribe trader on stop" in {
