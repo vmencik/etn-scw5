@@ -9,10 +9,7 @@ import scala.collection.immutable.Queue
 import org.scalatest.BeforeAndAfterAll
 import akka.testkit.TestActor
 
-class ExchangeSuite extends TestKit(ActorSystem("exchange"))
-  with FlatSpec
-  with ShouldMatchers
-  with BeforeAndAfterAll {
+class ExchangeSuite extends AkkaSuite {
 
   "exchange" should "enqueue a quote" in {
     val q = Buy("gold", 10, 10)
@@ -95,11 +92,4 @@ class ExchangeSuite extends TestKit(ActorSystem("exchange"))
 
   }
 
-  override protected def afterAll() = {
-    system.shutdown()
-    super.afterAll()
-  }
-
-  val buy = Buy("gold", quantity = 10, price = 5)
-  val sell = Sell("gold", quantity = 10, price = 4)
 }
