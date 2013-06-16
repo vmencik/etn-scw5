@@ -8,7 +8,7 @@ class Exchange extends Actor {
 
   private var cq = Map[String, Queue[Quote]]().withDefaultValue(Queue())
   private var th = List[Trade]()
-  private var traders = List[ActorRef]()
+  private var traders = Set[ActorRef]()
 
   def receive = {
     case q: Quote =>
@@ -24,18 +24,18 @@ class Exchange extends Actor {
         val trade = Trade(q.commodity, q.quantity, math.max(q.price, suffix.head.price))
         traders.foreach(_ ! trade)
         (prefix ++ suffix.tail, th :+ trade)
-      }      
+      }
 
       cq = cq.updated(q.commodity, newQueue)
       th = newHistory
-    
+
     case Subscribe(trader) =>
-      traders = traders :+ trader
+      traders = traders + trader
   }
 
   def commodityQueues = cq
 
   def tradeHistory = th
-  
+
   def subcribers = traders
 }

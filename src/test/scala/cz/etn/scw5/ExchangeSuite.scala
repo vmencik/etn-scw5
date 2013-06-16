@@ -84,6 +84,17 @@ class ExchangeSuite extends TestKit(ActorSystem("exchange"))
 
   }
 
+  it should "ignore duplicate subscriber" in {
+    val exchange = TestActorRef[Exchange]
+
+    exchange ! Subscribe(testActor)
+    exchange ! Subscribe(testActor)
+
+    exchange.underlyingActor.subcribers should have size (1)
+    exchange.underlyingActor.subcribers should contain(testActor)
+
+  }
+
   override protected def afterAll() = {
     system.shutdown()
     super.afterAll()
