@@ -9,18 +9,15 @@ object Setup extends App {
   val system = ActorSystem("exchange")
   val exchange = system.actorOf(Props(new Exchange))
   val tr1 = system.actorOf(Props(new Trader(exchange)), "first")
-  val tr2 = system.actorOf(Props(new Trader(exchange)), "second")
-  val tr3 = system.actorOf(Props(new Trader(exchange)), "third")
-  exchange ! Subscribe(tr1)
-  exchange ! Subscribe(tr2)
-  exchange ! Subscribe(tr3)
+  //  val tr2 = system.actorOf(Props(new Trader(exchange)), "second")
+  //  val tr3 = system.actorOf(Props(new Trader(exchange)), "third")
 
-  val buy = Buy("gold", quantity = 10, price = 5)
+  val buy = Buy("gold", quantity = 10, price = 500)
   val sell = Sell("gold", quantity = 10, price = 4)
 
-  exchange ! buy
+  exchange.tell(buy, tr1)
   exchange ! sell
 
-  Thread.sleep(2000)
+  Thread.sleep(5000)
   system.shutdown
 }
