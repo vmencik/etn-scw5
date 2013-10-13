@@ -20,4 +20,9 @@ class TraderSuite extends AkkaSuite {
     expectMsg(Subscribe(trader))
     expectMsg(Unsubscribe(trader))
   }
+
+  "Trader" should "use file configuration" in {
+    val trader = TestActorRef(Props(new Trader(testActor)))
+    trader.getSingleChild("")
+  }
 }

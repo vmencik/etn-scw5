@@ -6,6 +6,8 @@ class InsufficientFundsException extends RuntimeException {
 
 }
 
+case object GetStatus
+
 class Book(initCash: Int, initCommodities: Map[String, Int] = Map.empty) extends Actor {
 
   private var _cash = initCash
@@ -20,6 +22,7 @@ class Book(initCash: Int, initCommodities: Map[String, Int] = Map.empty) extends
     case Sell(commodity, quantity, price) =>
       _cash += quantity * price
       _commodities = _commodities updated (commodity, _commodities(commodity) - quantity)
+    case GetStatus => sender ! (_cash, _commodities)
   }
 
   def cash: Int = _cash

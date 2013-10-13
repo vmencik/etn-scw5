@@ -2,8 +2,9 @@ package cz.etn.scw5
 
 import akka.testkit.TestActorRef
 import akka.actor.Props
+import akka.testkit.ImplicitSender
 
-class BookSuite extends AkkaSuite {
+class BookSuite extends AkkaSuite with ImplicitSender {
 
   "Book" should "record buy of gold" in {
 
@@ -34,4 +35,9 @@ class BookSuite extends AkkaSuite {
     } should produce[InsufficientFundsException]
   }
 
+  it should "return status on call" in {
+    val book = TestActorRef[Book](Props(new Book(initCash = 120, initCommodities = Map("gold" -> 12))))
+    book ! GetStatus
+    expectMsg((120, Map("gold" -> 12)))
+  }
 }
