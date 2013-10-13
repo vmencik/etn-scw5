@@ -2,6 +2,8 @@ package cz.etn.scw5
 
 sealed trait Quote {
 
+  import Implicits._
+
   def commodity: String
   def quantity: Int
   def price: Int
@@ -10,13 +12,10 @@ sealed trait Quote {
     case _ => false
   }
 
-  //  def matches: Quote => Boolean = //isOppositeOf && matchesCommodity && matchesQuantity && matchesPrice
+  def matches: Quote => Boolean = isOppositeOf _ && matchesCommodity && matchesQuantity && matchesPrice
 
-  def matches(other: Quote): Boolean =
-    isOppositeOf(other) && commodity == other.commodity && quantity == other.quantity && matchesPrice(other)
-
-  //  protected def matchesCommodity(other: Quote): Boolean
-  //  protected def matchesQuantity(other: Quote): Boolean
+  protected def matchesCommodity(other: Quote): Boolean = commodity == other.commodity
+  protected def matchesQuantity(other: Quote): Boolean = quantity == other.quantity
   protected def matchesPrice(other: Quote): Boolean
 
 }

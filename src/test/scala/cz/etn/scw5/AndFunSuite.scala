@@ -2,15 +2,6 @@ package cz.etn.scw5
 
 import org.scalatest.FlatSpec
 import org.scalatest.Matchers
-//import language.implicitConversions
-
-object Implicits {
-  implicit class AndFun[A](val left: A => Boolean) extends AnyVal {
-
-    def &&(right: A => Boolean): A => Boolean = (a: A) => left(a) && right(a)
-
-  }
-}
 
 class AndFunSuite extends FlatSpec
   with Matchers {

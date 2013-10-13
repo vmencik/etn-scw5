@@ -7,8 +7,8 @@ import akka.actor.actorRef2Scala
 object Setup extends App {
 
   val system = ActorSystem("exchange")
-  val exchange = system.actorOf(Props(new Exchange))
-  val tr1 = system.actorOf(Props(new Trader(exchange)), "first")
+  val exchange = system.actorOf(Props[Exchange])
+  val tr1 = system.actorOf(Props(classOf[Trader], exchange), "first")
   //  val tr2 = system.actorOf(Props(new Trader(exchange)), "second")
   //  val tr3 = system.actorOf(Props(new Trader(exchange)), "third")
 
