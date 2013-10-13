@@ -4,6 +4,7 @@ import akka.testkit.TestActorRef
 import akka.actor.Props
 import akka.actor.Kill
 import akka.actor.PoisonPill
+import akka.testkit.TestProbe
 
 class TraderSuite extends AkkaSuite {
   "Trader" should "subscribe to an exchange once created" in {
@@ -22,7 +23,9 @@ class TraderSuite extends AkkaSuite {
   }
 
   "Trader" should "use file configuration" in {
-    val trader = TestActorRef(Props(new Trader(testActor)))
-    trader.getSingleChild("")
+    val exchange = TestProbe()
+    val trader = TestActorRef[Trader](Props(new Trader(exchange.ref)))
+    trader.underlyingActor.book.tell(GetStatus, testActor)
+    expectMsg((800, Map("gold" -> 15)))
   }
 }
