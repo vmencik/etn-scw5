@@ -6,7 +6,7 @@ import akka.actor.Props
 import akka.event.Logging
 import akka.actor.ActorLogging
 
-class Trader(exchange: ActorRef) extends Actor with ActorLogging {
+class Trader(exchange: ActorRef, traderName: String = "trader") extends Actor with ActorLogging {
 
   private var _book: ActorRef = _
 
@@ -21,9 +21,11 @@ class Trader(exchange: ActorRef) extends Actor with ActorLogging {
 
   // Po inicializaci konstruktorem. Volano i po restartu.
   override def preStart() {
-    val traderConfig = context.system.settings.config.getConfig("exchange.trader")
+    val traderConfig = context.system.settings.config.getConfig("exchange." + traderName).
+      withFallback(context.system.settings.config.getConfig("exchange.trader"))
     val initCash = traderConfig.getInt("initCash")
     val initGold = traderConfig.getInt("initGold")
+
     _book = context.actorOf(Props(new Book(initCash, Map("gold" -> initGold))))
     exchange ! Subscribe(self)
   }
