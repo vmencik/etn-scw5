@@ -6,4 +6,5 @@ class TestSuite extends Suites(
   new ExchangeSuite,
   new QuoteSuite,
   new TraderSuite,
-  new BookSuite)
+  new BookSuite,
+  new AndFunSuite)

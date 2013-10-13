@@ -10,18 +10,14 @@ sealed trait Quote {
     case _ => false
   }
 
-  def matches: Quote => Boolean = isOppositeOf && matchesCommodity && matchesQuantity && matchesPrice
+  //  def matches: Quote => Boolean = //isOppositeOf && matchesCommodity && matchesQuantity && matchesPrice
 
-  //  def matches(other: Quote): Boolean =
-  //    isOppositeOf(other) && commodity == other.commodity && quantity == other.quantity && matchesPrice(other.price)
+  def matches(other: Quote): Boolean =
+    isOppositeOf(other) && commodity == other.commodity && quantity == other.quantity && matchesPrice(other)
 
-  protected def matchesCommodity(other: Quote): Boolean
-  protected def matchesQuantity(other: Quote): Boolean
+  //  protected def matchesCommodity(other: Quote): Boolean
+  //  protected def matchesQuantity(other: Quote): Boolean
   protected def matchesPrice(other: Quote): Boolean
-
-}
-
-trait AndFun[A] extends (A => Boolean) {
 
 }
 
