@@ -7,26 +7,31 @@ import akka.actor.ActorRef
 import javax.swing.JButton
 import java.awt.event.ActionListener
 import java.awt.event.ActionEvent
+import scala.swing.Frame
+import scala.swing.TextField
+import scala.swing.Button
+import scala.swing.GridPanel
+import scala.swing.event.ButtonClicked
+import java.awt.Dimension
 
-class TraderInput(exchange: ActorRef, trader: ActorRef) extends JFrame(trader.path.name) {
+class TraderInput(exchange: ActorRef, trader: ActorRef) extends Frame() {
 
-  override protected def frameInit() {
-    super.frameInit
-    val inputField = new JTextField()
-    val button = new JButton("Odeslat")
+  title = trader.path.name
 
-    // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
-    getContentPane().add(inputField, BorderLayout.CENTER)
-    getContentPane().add(button, BorderLayout.SOUTH)
-    button.addActionListener(new ActionListener() {
-      override def actionPerformed(event: ActionEvent): Unit = {
-        val text = inputField.getText()
+  val inputField = new TextField()
+  val button = new Button("Odeslat") {
+    reactions += {
+      case ButtonClicked(_) =>
+        val text = inputField.text
         println("Text input: " + text)
         exchange.tell(ParseQuote(text), trader)
-        inputField.setText("")
-      }
-    })
-    setSize(500, 500)
-    setVisible(true)
+        inputField.text = ""
+    }
   }
+
+  contents = new GridPanel(2, 1) {
+    contents ++= Seq(inputField, button)
+  }
+  size = new Dimension(500, 500)
+  visible = true
 }
