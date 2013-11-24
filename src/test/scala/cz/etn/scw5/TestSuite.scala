@@ -9,4 +9,5 @@ class TestSuite extends Suites(
   new QuoteSuite,
   new TraderSuite,
   new BookSuite,
-  new AndFunSuite)
+  new AndFunSuite,
+  new QuoteParserSuite)
