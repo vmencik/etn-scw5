@@ -22,6 +22,7 @@ class Trader(exchange: ActorRef, traderName: String = "trader") extends Actor wi
 
   // Po inicializaci konstruktorem. Volano i po restartu.
   override def preStart() {
+
     val traderConfig = context.system.settings.config.getConfig("exchange." + traderName).
       withFallback(context.system.settings.config.getConfig("exchange.trader"))
     val initCash = traderConfig.getInt("initCash")

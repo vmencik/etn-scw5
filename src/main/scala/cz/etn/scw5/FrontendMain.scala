@@ -34,16 +34,8 @@ object FrontendMain extends App {
       val tr1 = system.actorOf(Props(classOf[Trader], exchange, "richTrader"), "first")
       val tr2 = system.actorOf(Props(new Trader(exchange, "poorTrader")), "second")
 
-      val buy = Buy("gold", quantity = 10, price = 5)
-      val sell = Sell("gold", quantity = 10, price = 4)
-
-      Thread.sleep(1000)
-
-      exchange.tell(buy, tr1)
-      exchange.tell(sell, tr2)
-
-      Thread.sleep(5000)
-      system.shutdown
+      val inputWindow = new TraderInput(exchange, tr1)
+      val inputWindow2 = new TraderInput(exchange, tr2)
   }
 
   fExchange onFailure {
