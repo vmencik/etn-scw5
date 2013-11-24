@@ -8,6 +8,6 @@ object BackendMain extends App {
 
   val config = ConfigFactory.load("backend")
   val system = ActorSystem("backend", config)
-  system.actorOf(Props[Exchange])
+  system.actorOf(Props[Exchange], "exchange")
 
 }

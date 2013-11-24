@@ -12,9 +12,10 @@ class Trader(exchange: ActorRef, traderName: String = "trader") extends Actor wi
 
   def receive = {
     case t: Trade =>
-      log.info(self.path.name + " xxxx: " + t)
-    case b: Buy =>
-      _book.forward(b)
+      log.info(self.path.name + ": received trade " + t)
+    case q: Quote =>
+      _book.forward(q)
+      log.info(self.path.name + ": received quote " + q)
   }
 
   def book = _book
@@ -26,12 +27,14 @@ class Trader(exchange: ActorRef, traderName: String = "trader") extends Actor wi
     val initCash = traderConfig.getInt("initCash")
     val initGold = traderConfig.getInt("initGold")
 
+    log.info(self.path.name + " starting, subscribing to " + exchange)
     _book = context.actorOf(Props(new Book(initCash, Map("gold" -> initGold))))
     exchange ! Subscribe(self)
   }
 
   override def postStop() {
     exchange ! Unsubscribe(self)
+    log.info(self.path.name + " unsubscribing from " + exchange)
   }
 
 }

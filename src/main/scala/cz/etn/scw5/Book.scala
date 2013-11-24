@@ -29,18 +29,4 @@ class Book(initCash: Int, initCommodities: Map[String, Int] = Map.empty) extends
 
   def commodities: Map[String, Int] = _commodities
 
-  override def preRestart(reason: Throwable, message: Option[Any]) {
-    println("prerestart")
-    super.preRestart(reason, message)
-  }
-
-  override def postRestart(reason: Throwable) {
-    println("postrestart")
-    super.postRestart(reason)
-  }
-
-  override def preStart = println("prestart")
-
-  override def postStop = println("poststop")
-
 }
