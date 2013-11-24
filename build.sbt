@@ -17,9 +17,6 @@ libraryDependencies ++= {
 	)
 }
 
-retrieveManaged := true
-
-EclipseKeys.relativizeLibs := true
 
 EclipseKeys.createSrc := EclipseCreateSrc.Default + EclipseCreateSrc.Resource
 
