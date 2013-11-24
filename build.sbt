@@ -12,7 +12,7 @@ libraryDependencies ++= {
 		"com.typesafe.akka" %% "akka-actor" % akkaVersion,
 		"com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
 		"ch.qos.logback" % "logback-classic" % "1.0.10",
-		"org.scalatest" %% "scalatest" % "2.0.RC1" % "test",
+		"org.scalatest" %% "scalatest" % "2.0" % "test",
 		"com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test"
 	)
 }

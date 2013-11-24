@@ -8,8 +8,8 @@ object Setup extends App {
 
   val system = ActorSystem("exchange")
   val exchange = system.actorOf(Props[Exchange])
-  val tr1 = system.actorOf(Props(classOf[Trader], exchange), "first")
-  val tr2 = system.actorOf(Props(new Trader(exchange)), "second")
+  val tr1 = system.actorOf(Props(classOf[Trader], exchange, "richTrader"), "first")
+  val tr2 = system.actorOf(Props(new Trader(exchange, "poorTrader")), "second")
   //  val tr3 = system.actorOf(Props(new Trader(exchange)), "third")
 
   val buy = Buy("gold", quantity = 10, price = 5)
