@@ -13,6 +13,7 @@ libraryDependencies ++= {
 		"com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
 		"com.typesafe.akka" %% "akka-remote" % akkaVersion,
 		"ch.qos.logback" % "logback-classic" % "1.0.10",
+		"org.scala-lang" % "scala-swing" % scalaVersion.value,
 		"org.scalatest" %% "scalatest" % "2.0" % "test",
 		"com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test"
 	)
